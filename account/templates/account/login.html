@@ -22,6 +22,9 @@
 
                     <div class="form-group">
                         <label for="phone_number">Phone Number</label>
+                        {% for error in form.phone_number.errors %}
+                            <p class="alert alert-danger">{{ form.phone_number.errors }}</p>
+                        {% endfor %}
                         {{ form.phone_number }}
                     </div>
 
