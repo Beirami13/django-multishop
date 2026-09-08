@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block main %}
+
+    <!-- Register Start -->
+    <div class="container-fluid pt-5 pb-5">
+
+        <h2 class="section-title position-relative text-uppercase text-center mx-xl-5 mb-4">
+            <span class="bg-secondary pr-3">Create Account</span>
+        </h2>
+
+        <div class="row px-xl-5 justify-content-center">
+
+            <div class="col-lg-6">
+
+                <div class="bg-light p-30">
+
+                    <form method="POST">
+                        {% csrf_token %}
+
+                        <div class="form-group">
+                            <label for="phone_number">Phone Number</label>
+                            {{ form.phone_number }}
+                        </div>
+
+                        <button type="submit"
+                                class="btn btn-primary btn-block py-2">
+                            Continue
+                        </button>
+
+                        <div class="text-center mt-4">
+                            <p class="mb-0">
+                                Already have an account?
+                                <a href="{% url 'account:login' %}">Login</a>
+                            </p>
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+    <!-- Register End -->
+
+{% endblock %}
