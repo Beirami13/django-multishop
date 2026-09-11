@@ -6,9 +6,8 @@ from django.views import View
 from .forms import UserLoginForm, RegisterForm, CheckOtpForm
 import ghasedak_sms
 from random import randint
-
 from .models import otp, User
-from .validator import phone
+from uuid import uuid4
 
 SMS = ghasedak_sms.Ghasedak("API", '09924631590')
 
@@ -46,7 +45,7 @@ class UserRegister(View):
             cd = form.cleaned_data
 
             rand_code = randint(1000, 9999)
-            token = get_random_string(length=100)
+            token = str(uuid4())
 
             SMS.send_single_sms(
                 ghasedak_sms.SendSingleSmsInput(
@@ -97,7 +96,7 @@ class CheckOtpView(View):
             ).first()
 
             if otp_obj:
-                user = User.objects.create_user(
+                user, is_create = User.objects.get_or_create(
                     phone_number=otp_obj.phone_number
                 )
 
@@ -105,7 +104,8 @@ class CheckOtpView(View):
 
                 return redirect('/')
 
-            form.add_error('code', 'کد وارد شده صحیح نیست.')
+            form.add_error('code', 'wrong code')
+            otp_obj.delete()
 
         return render(
             request,
