@@ -40,3 +40,10 @@ class ProductImage(models.Model):
 
     def __str__(self):
         return {self.product.name}
+
+class information(models.Model):
+    text= models.TextField()
+    product = models.ForeignKey(Product, null=True,  on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.text
