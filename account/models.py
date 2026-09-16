@@ -73,3 +73,11 @@ class otp(models.Model):
 
     def __str__(self):
         return self.phone_number
+
+
+class Address(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    address = models.CharField(max_length=300)
+
+    def __str__(self):
+        return self.address

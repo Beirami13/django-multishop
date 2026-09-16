@@ -1,9 +1,9 @@
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.utils.crypto import get_random_string
 from django.views import View
-from .forms import UserLoginForm, RegisterForm, CheckOtpForm
+from .forms import UserLoginForm, RegisterForm, CheckOtpForm, AddressCreationForm
 import ghasedak_sms
 from random import randint
 from .models import otp, User
@@ -112,3 +112,32 @@ class CheckOtpView(View):
             'account/checkCode.html',
             {'form': form}
         )
+
+class AddAddressView(View):
+    def get(self, request):
+        form = AddressCreationForm()
+        return render(
+            request,
+            'account/add_address.html',
+            {'form': form}
+        )
+
+    def post(self, request):
+        form = AddressCreationForm(request.POST)
+
+        if form.is_valid():
+            address = form.save(commit=False)
+            address.user = request.user
+            address.save()
+
+            return redirect('account:add_address')
+
+        return render(
+            request,
+            'account/add_address.html',
+            {'form': form}
+        )
+
+def UserLogout(request):
+        logout(request)
+        return redirect('/')

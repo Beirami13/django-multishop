@@ -2,7 +2,8 @@ from .validator import phone
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.core.exceptions import ValidationError
 from django import forms
-from .models import User
+from .models import User, Address
+
 
 class UserCreationForm(forms.ModelForm):
     """A form for creating new users. Includes all the required
@@ -62,3 +63,8 @@ class RegisterForm(forms.ModelForm):
 
 class CheckOtpForm(forms.Form):
     code = forms.CharField(widget=forms.TextInput(attrs={"class": "form-control"}))
+
+class AddressCreationForm(forms.ModelForm):
+    class Meta:
+        model = Address
+        fields = "__all__"
