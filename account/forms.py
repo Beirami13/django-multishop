@@ -65,6 +65,7 @@ class CheckOtpForm(forms.Form):
     code = forms.CharField(widget=forms.TextInput(attrs={"class": "form-control"}))
 
 class AddressCreationForm(forms.ModelForm):
+    user = forms.ImageField(required=False)
     class Meta:
         model = Address
         fields = "__all__"

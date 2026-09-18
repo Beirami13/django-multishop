@@ -18,7 +18,7 @@ class Product(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField()
     price = models.IntegerField()
-    discount = models.IntegerField()
+    discount = models.IntegerField(blank=True, null=True)
     image = models.ImageField(upload_to="products")
     size = models.ManyToManyField(Size)
     color = models.ManyToManyField(Color)

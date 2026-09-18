@@ -4,6 +4,7 @@ from django.views import View
 from .cart_modules import Cart
 
 from product.models import Product
+from .models import Order, OrderItem
 
 
 class CartView(View):
@@ -39,3 +40,43 @@ class CartUpdateView(View):
         cart.update(unique_id, quantity)
 
         return redirect('cart:cart')
+
+class OrderCreationView(View):
+
+    def get(self, request):
+        cart = Cart(request)
+
+        return render(
+            request,
+            'cart/order_detail.html',
+            {'cart_items': cart}
+        )
+
+    def post(self, request):
+        cart = Cart(request)
+
+        order = Order.objects.create(
+            user=request.user,
+        )
+
+        for item in cart:
+            OrderItem.objects.create(
+                order=order,
+                product=item['product'],
+                price=item['product'].price,
+                color=item['color'],
+                quantity=item['quantity'],
+                size=item['size']
+            )
+
+        return redirect(
+            'cart:order-detail',
+            id=order.id
+        )
+
+class OrderDetailView(View):
+    def get(self, request, id):
+        order = get_object_or_404(Order, id=id)
+
+        return render(request, 'cart/order_detail.html', {'order': order})
+

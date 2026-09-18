@@ -44,6 +44,14 @@ class Cart:
     def save(self):
         self.session.modified = True
 
+    def total(self):
+        total = 0
+        cart = self.cart.values()
+        for item in cart:
+            total += item['total']
+            item['total'] = int(item['total'])
+        return total
+
     def remove(self, id):
         if id in self.cart:
             del self.cart[id]

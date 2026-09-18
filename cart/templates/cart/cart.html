@@ -229,14 +229,15 @@
 
                             <h5>Total</h5>
 
-                            <h5>$160</h5>
+                            <h5>{{ cart_items.total }}</h5>
 
                         </div>
 
 
-                        <button class="btn btn-block btn-primary font-weight-bold my-3 py-3">
+                        <a href="{% url 'cart:order-creation' %}"
+                           class="btn btn-block btn-primary font-weight-bold my-3 py-3">
                             Proceed To Checkout
-                        </button>
+                        </a>
 
                     </div>
 
