@@ -9,7 +9,7 @@ from cart.models import Order, OrderItem
 from .forms import UserLoginForm, RegisterForm, CheckOtpForm, AddressCreationForm
 import ghasedak_sms
 from random import randint
-from .models import otp, User
+from .models import otp, User, Address
 from uuid import uuid4
 
 SMS = ghasedak_sms.Ghasedak("API", '09924631590')
@@ -119,27 +119,35 @@ class CheckOtpView(View):
 class AddAddressView(View):
     def get(self, request):
         form = AddressCreationForm()
-        return render(
-            request,
-            'account/add_address.html',
-            {'form': form}
-        )
+        return render(request, 'account/add_address.html', {'form': form})
 
     def post(self, request):
         form = AddressCreationForm(request.POST)
 
         if form.is_valid():
+            cd = form.cleaned_data
+
+            if Address.objects.filter(user=request.user).count() >= 5:
+                form.add_error(None, "You can't save more than 5 addresses.")
+                return render(request, 'account/add_address.html', {'form': form})
+
+            duplicate = Address.objects.filter(
+                user=request.user,
+                city=cd['city'],
+                address=cd['address'],
+                zip_code=cd['zip_code'],
+            ).exists()
+
+            if duplicate:
+                form.add_error(None, "This address already exists.")
+                return render(request, 'account/add_address.html', {'form': form})
+
             address = form.save(commit=False)
             address.user = request.user
             address.save()
+            return redirect('cart:checkout')
 
-            return redirect('account:add_address')
-
-        return render(
-            request,
-            'account/add_address.html',
-            {'form': form}
-        )
+        return render(request, 'account/add_address.html', {'form': form})
 
 def UserLogout(request):
         logout(request)

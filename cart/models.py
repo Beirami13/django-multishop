@@ -5,15 +5,18 @@ from product.models import Product
 
 
 class Order(models.Model):
+    PAYMENT_CHOICES = [
+        ('cash', 'Cash on Delivery'),
+        ('online', 'Online Payment'),
+    ]
+
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    address = models.ForeignKey('account.Address', on_delete=models.PROTECT)
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
-    address = models.CharField(max_length=300)
     phone_number = models.CharField(max_length=100)
     email = models.EmailField(blank=True, null=True)
-    country = models.CharField(max_length=100)
-    city = models.CharField(max_length=100)
-    zip_code = models.CharField(max_length=100)
+    payment_method = models.CharField(max_length=20, choices=PAYMENT_CHOICES, default='cash')
     created = models.DateTimeField(auto_now_add=True)
     is_paid = models.BooleanField(default=False)
 
@@ -25,7 +28,9 @@ class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.IntegerField()
-    price = models.FloatField()
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    size = models.CharField(max_length=20)
+    color = models.CharField(max_length=50)
 
     def __str__(self):
         return self.product.name

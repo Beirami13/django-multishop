@@ -76,8 +76,13 @@ class otp(models.Model):
 
 
 class Address(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='addresses')
+    city = models.CharField(max_length=100)
     address = models.CharField(max_length=300)
+    zip_code = models.CharField(max_length=20)
+
+    class Meta:
+        unique_together = ('user', 'city', 'address', 'zip_code')
 
     def __str__(self):
-        return self.address
+        return f"{self.city} - {self.address}"

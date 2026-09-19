@@ -2,7 +2,14 @@ from django.contrib import admin
 from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from .forms import UserCreationForm, UserChangeForm
-from account.models import User, otp
+from account.models import User, otp, Address
+
+
+@admin.register(Address)
+class AddressAdmin(admin.ModelAdmin):
+    list_display = ['user', 'city', 'address', 'zip_code']
+    list_filter = ['city']
+    search_fields = ['user__phone_number', 'city', 'address']
 
 
 class UserAdmin(BaseUserAdmin):
