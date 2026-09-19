@@ -1,6 +1,6 @@
 from django.urls import path
 
-from cart.views import OrderDetailView, OrderCreationView
+from cart.views import OrderDetailView, OrderCreationView, DiscountCheckView
 from cart.views import CartView, CartAddView, CartRemoveView, CartUpdateView
 
 app_name = 'cart'
@@ -12,4 +12,5 @@ urlpatterns = [
 
     path('checkout/', OrderCreationView.as_view(), name='order-creation'),
     path('order/<int:id>/', OrderDetailView.as_view(), name='order-detail'),
+    path('Applydiscount/', DiscountCheckView.as_view(), name='apply-discount'),
 ]

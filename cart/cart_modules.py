@@ -60,3 +60,6 @@ class Cart:
             self.cart[unique_id]['quantity'] = int(quantity)
 
         self.session.modified = True
+
+    def remove_cart(self):
+        del self.session['cart']
