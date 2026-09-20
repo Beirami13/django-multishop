@@ -29,6 +29,13 @@ class Product(models.Model):
     image = models.ImageField(upload_to="products")
     size = models.ManyToManyField(Size)
     color = models.ManyToManyField(Color)
+    created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+
+    def discounted_price(self):
+        if self.discount:
+            return int(self.price - (self.price * self.discount / 100))
+
+        return self.price
 
     class Meta:
         ordering = ['name']

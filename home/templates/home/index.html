@@ -34,12 +34,11 @@
                                     </h1>
 
                                     <p class="mx-md-5 px-5 animate__animated animate__bounceIn">
-                                        Lorem rebum magna amet lorem magna erat diam stet. Sadips duo stet amet amet
-                                        ndiam elitr ipsum diam
+                                        Lorem rebum magna amet lorem magna erat diam stet.
                                     </p>
 
                                     <a class="btn btn-outline-light py-2 px-4 mt-3 animate__animated animate__fadeInUp"
-                                       href="#">
+                                       href="{% url 'product:products' %}">
                                         Shop Now
                                     </a>
 
@@ -60,12 +59,11 @@
                                     </h1>
 
                                     <p class="mx-md-5 px-5 animate__animated animate__bounceIn">
-                                        Lorem rebum magna amet lorem magna erat diam stet. Sadips duo stet amet amet
-                                        ndiam elitr ipsum diam
+                                        Lorem rebum magna amet lorem magna erat diam stet.
                                     </p>
 
                                     <a class="btn btn-outline-light py-2 px-4 mt-3 animate__animated animate__fadeInUp"
-                                       href="#">
+                                       href="{% url 'product:products' %}">
                                         Shop Now
                                     </a>
 
@@ -86,12 +84,11 @@
                                     </h1>
 
                                     <p class="mx-md-5 px-5 animate__animated animate__bounceIn">
-                                        Lorem rebum magna amet lorem magna erat diam stet. Sadips duo stet amet amet
-                                        ndiam elitr ipsum diam
+                                        Lorem rebum magna amet lorem magna erat diam stet.
                                     </p>
 
                                     <a class="btn btn-outline-light py-2 px-4 mt-3 animate__animated animate__fadeInUp"
-                                       href="#">
+                                       href="{% url 'product:products' %}">
                                         Shop Now
                                     </a>
 
@@ -106,30 +103,57 @@
             <div class="col-lg-4">
 
                 <div class="product-offer mb-30" style="height: 200px;">
+
                     <img class="img-fluid"
                          src="{% static 'img/offer-1.jpg' %}"
                          alt="">
 
                     <div class="offer-text">
-                        <h6 class="text-white text-uppercase">Save 20%</h6>
-                        <h3 class="text-white mb-3">Special Offer</h3>
-                        <a href="" class="btn btn-primary">Shop Now</a>
+
+                        <h6 class="text-white text-uppercase">
+                            Save 20%
+                        </h6>
+
+                        <h3 class="text-white mb-3">
+                            Special Offer
+                        </h3>
+
+                        <a href="{% url 'product:products' %}"
+                           class="btn btn-primary">
+                            Shop Now
+                        </a>
+
                     </div>
+
                 </div>
 
                 <div class="product-offer mb-30" style="height: 200px;">
+
                     <img class="img-fluid"
                          src="{% static 'img/offer-2.jpg' %}"
                          alt="">
 
                     <div class="offer-text">
-                        <h6 class="text-white text-uppercase">Save 20%</h6>
-                        <h3 class="text-white mb-3">Special Offer</h3>
-                        <a href="" class="btn btn-primary">Shop Now</a>
+
+                        <h6 class="text-white text-uppercase">
+                            Save 20%
+                        </h6>
+
+                        <h3 class="text-white mb-3">
+                            Special Offer
+                        </h3>
+
+                        <a href="{% url 'product:products' %}"
+                           class="btn btn-primary">
+                            Shop Now
+                        </a>
+
                     </div>
+
                 </div>
 
             </div>
+
         </div>
     </div>
     <!-- Carousel End -->
@@ -137,302 +161,430 @@
 
     <!-- Featured Start -->
     <div class="container-fluid pt-5">
+
         <div class="row px-xl-5 pb-3">
 
             <div class="col-lg-3 col-md-6 col-sm-12 pb-1">
-                <div class="d-flex align-items-center bg-light mb-4" style="padding: 30px;">
+
+                <div class="d-flex align-items-center bg-light mb-4"
+                     style="padding: 30px;">
+
                     <h1 class="fa fa-check text-primary m-0 mr-3"></h1>
-                    <h5 class="font-weight-semi-bold m-0">Quality Product</h5>
+
+                    <h5 class="font-weight-semi-bold m-0">
+                        Quality Product
+                    </h5>
+
                 </div>
+
             </div>
 
             <div class="col-lg-3 col-md-6 col-sm-12 pb-1">
-                <div class="d-flex align-items-center bg-light mb-4" style="padding: 30px;">
+
+                <div class="d-flex align-items-center bg-light mb-4"
+                     style="padding: 30px;">
+
                     <h1 class="fa fa-shipping-fast text-primary m-0 mr-2"></h1>
-                    <h5 class="font-weight-semi-bold m-0">Free Shipping</h5>
+
+                    <h5 class="font-weight-semi-bold m-0">
+                        Free Shipping
+                    </h5>
+
                 </div>
+
             </div>
 
             <div class="col-lg-3 col-md-6 col-sm-12 pb-1">
-                <div class="d-flex align-items-center bg-light mb-4" style="padding: 30px;">
+
+                <div class="d-flex align-items-center bg-light mb-4"
+                     style="padding: 30px;">
+
                     <h1 class="fas fa-exchange-alt text-primary m-0 mr-3"></h1>
-                    <h5 class="font-weight-semi-bold m-0">14-Day Return</h5>
+
+                    <h5 class="font-weight-semi-bold m-0">
+                        14-Day Return
+                    </h5>
+
                 </div>
+
             </div>
 
             <div class="col-lg-3 col-md-6 col-sm-12 pb-1">
-                <div class="d-flex align-items-center bg-light mb-4" style="padding: 30px;">
+
+                <div class="d-flex align-items-center bg-light mb-4"
+                     style="padding: 30px;">
+
                     <h1 class="fa fa-phone-volume text-primary m-0 mr-3"></h1>
-                    <h5 class="font-weight-semi-bold m-0">24/7 Support</h5>
+
+                    <h5 class="font-weight-semi-bold m-0">
+                        24/7 Support
+                    </h5>
+
                 </div>
+
             </div>
 
         </div>
+
     </div>
     <!-- Featured End -->
 
 
     <!-- Categories Start -->
-    <div class="col-lg-3 d-none d-lg-block">
-        <a class="btn shadow-none d-flex align-items-center justify-content-between bg-primary text-white w-100"
-           data-toggle="collapse"
-           href="#navbar-vertical"
-           style="height: 65px; margin-top: -1px; padding: 0 30px;">
+    <div class="container-fluid">
 
-            <h6 class="m-0 text-white">
-                <i class="fa fa-bars mr-2"></i>
-                Categories
-            </h6>
+        <div class="row px-xl-5">
 
-            <i class="fa fa-angle-down text-white"></i>
-        </a>
+            <div class="col-lg-3 d-none d-lg-block">
 
-        <nav class="collapse position-absolute navbar navbar-vertical navbar-light align-items-start p-0 bg-light"
-             id="navbar-vertical"
-             style="width: calc(100% - 30px); z-index: 999;">
+                <a class="btn shadow-none d-flex align-items-center justify-content-between bg-primary text-white w-100"
+                   data-toggle="collapse"
+                   href="#navbar-vertical"
+                   style="height: 65px; margin-top: -1px; padding: 0 30px;">
 
-            <div class="navbar-nav w-100">
+                    <h6 class="m-0 text-white">
+                        <i class="fa fa-bars mr-2"></i>
+                        Categories
+                    </h6>
 
-                {% for category in categories %}
+                    <i class="fa fa-angle-down text-white"></i>
 
-                    {% if not category.parent %}
+                </a>
 
-                        {% if category.category_set.all %}
+                <nav class="collapse position-absolute navbar navbar-vertical navbar-light align-items-start p-0 bg-light"
+                     id="navbar-vertical"
+                     style="width: calc(100% - 30px); z-index: 999;">
 
-                            <!-- Parent Category -->
-                            <div class="nav-item dropdown dropright">
+                    <div class="navbar-nav w-100">
 
-                                <a href="#"
-                                   class="nav-link dropdown-toggle"
-                                   data-toggle="dropdown">
+                        {% for category in categories %}
 
-                                    {{ category.name }}
+                            {% if not category.parent %}
 
-                                    <i class="fa fa-angle-right float-right mt-1"></i>
-                                </a>
+                                {% with children=category.category_set.all %}
 
-                                <!-- Children -->
-                                <div class="dropdown-menu position-absolute rounded-0 border-0 m-0">
+                                    {% if children %}
 
-                                    {% for child in category.category_set.all %}
+                                        <div class="nav-item dropdown dropright">
 
-                                        {% if child.category_set.all %}
+                                            <a href="{% url 'product:category' category.slug %}"
+                                               class="nav-link dropdown-toggle"
+                                               data-toggle="dropdown">
 
-                                            <!-- Child with its own children -->
-                                            <div class="dropdown-submenu">
+                                                {{ category.name }}
 
-                                                <a href="#"
-                                                   class="dropdown-item dropdown-toggle">
+                                                <i class="fa fa-angle-right float-right mt-1"></i>
 
-                                                    {{ child.name }}
-                                                </a>
+                                            </a>
 
-                                                <div class="dropdown-menu">
+                                            <div class="dropdown-menu position-absolute rounded-0 border-0 m-0">
 
-                                                    {% for subchild in child.category_set.all %}
+                                                {% for child in children %}
 
-                                                        <a href="#"
-                                                           class="dropdown-item">
+                                                    {% with subchildren=child.category_set.all %}
 
-                                                            {{ subchild.name }}
-                                                        </a>
+                                                        {% if subchildren %}
 
-                                                    {% endfor %}
+                                                            <div class="dropdown-submenu">
 
-                                                </div>
+                                                                <a href="{% url 'product:category' child.slug %}"
+                                                                   class="dropdown-item dropdown-toggle">
+
+                                                                    {{ child.name }}
+
+                                                                </a>
+
+                                                                <div class="dropdown-menu">
+
+                                                                    {% for subchild in subchildren %}
+
+                                                                        <a href="{% url 'product:category' subchild.slug %}"
+                                                                           class="dropdown-item">
+
+                                                                            {{ subchild.name }}
+
+                                                                        </a>
+
+                                                                    {% endfor %}
+
+                                                                </div>
+
+                                                            </div>
+
+                                                        {% else %}
+
+                                                            <a href="{% url 'product:category' child.slug %}"
+                                                               class="dropdown-item">
+
+                                                                {{ child.name }}
+
+                                                            </a>
+
+                                                        {% endif %}
+
+                                                    {% endwith %}
+
+                                                {% endfor %}
 
                                             </div>
 
-                                        {% else %}
+                                        </div>
 
-                                            <!-- Child without children -->
-                                            <a href="#"
-                                               class="dropdown-item">
+                                    {% else %}
 
-                                                {{ child.name }}
-                                            </a>
+                                        <a href="{% url 'product:category' category.slug %}"
+                                           class="nav-item nav-link">
 
-                                        {% endif %}
+                                            {{ category.name }}
 
-                                    {% endfor %}
+                                        </a>
 
-                                </div>
+                                    {% endif %}
 
-                            </div>
+                                {% endwith %}
 
-                        {% else %}
+                            {% endif %}
 
-                            <!-- Category without children -->
-                            <a href="#"
-                               class="nav-item nav-link">
+                        {% endfor %}
 
-                                {{ category.name }}
+                    </div>
 
-                            </a>
-
-                        {% endif %}
-
-                    {% endif %}
-
-                {% endfor %}
+                </nav>
 
             </div>
 
-        </nav>
+        </div>
+
     </div>
     <!-- Categories End -->
 
 
-    <!-- Products Start -->
+    <!-- Featured Products Start -->
     <div class="container-fluid pt-5 pb-3">
 
         <h2 class="section-title position-relative text-uppercase mx-xl-5 mb-4">
-            <span class="bg-secondary pr-3">Featured Products</span>
+
+            <span class="bg-secondary pr-3">
+                Featured Products
+            </span>
+
         </h2>
 
         <div class="row px-xl-5">
 
-            {% for i in "12345678" %}
+            {% for product in featured_products %}
+
                 <div class="col-lg-3 col-md-4 col-sm-6 pb-1">
+
                     <div class="product-item bg-light mb-4">
 
                         <div class="product-img position-relative overflow-hidden">
+
                             <img class="img-fluid w-100"
-                                 src="{% static 'img/product-'|add:i|add:'.jpg' %}"
-                                 alt="">
+                                 src="{{ product.image.url }}"
+                                 alt="{{ product.name }}">
 
                             <div class="product-action">
-                                <a class="btn btn-outline-dark btn-square" href="">
-                                    <i class="fa fa-shopping-cart"></i>
-                                </a>
-                                <a class="btn btn-outline-dark btn-square" href="">
-                                    <i class="far fa-heart"></i>
-                                </a>
-                                <a class="btn btn-outline-dark btn-square" href="">
-                                    <i class="fa fa-sync-alt"></i>
-                                </a>
-                                <a class="btn btn-outline-dark btn-square" href="">
+
+                                <a class="btn btn-outline-dark btn-square"
+                                   href="{% url 'product:detail' product.pk %}">
                                     <i class="fa fa-search"></i>
                                 </a>
+
+                                <a class="btn btn-outline-dark btn-square"
+                                   href="">
+                                    <i class="far fa-heart"></i>
+                                </a>
+
+                                <a class="btn btn-outline-dark btn-square"
+                                   href="">
+                                    <i class="fa fa-sync-alt"></i>
+                                </a>
+
+                                <a class="btn btn-outline-dark btn-square"
+                                   href="">
+                                    <i class="fa fa-shopping-cart"></i>
+                                </a>
+
                             </div>
+
                         </div>
 
                         <div class="text-center py-4">
-                            <a class="h6 text-decoration-none text-truncate" href="">
-                                Product Name Goes Here
+
+                            <a class="h6 text-decoration-none text-truncate"
+                               href="{% url 'product:detail' product.pk %}">
+
+                                {{ product.name }}
+
                             </a>
 
                             <div class="d-flex align-items-center justify-content-center mt-2">
-                                <h5>$123.00</h5>
-                                <h6 class="text-muted ml-2">
-                                    <del>$123.00</del>
-                                </h6>
+
+                                {% if product.discount %}
+
+                                    <h6 class="text-muted mr-2 mb-0">
+                                        <del>{{ product.price }}</del>
+                                    </h6>
+
+                                    <h5 class="text-danger mb-0">
+                                        {{ product.discounted_price }}
+                                    </h5>
+
+                                {% else %}
+
+                                    <h5 class="mb-0">
+                                        {{ product.price }}
+                                    </h5>
+
+                                {% endif %}
+
                             </div>
 
+                            {% if product.discount %}
+
+                                <small class="text-danger">
+                                    {{ product.discount }}% OFF
+                                </small>
+
+                            {% endif %}
+
                         </div>
+
                     </div>
+
                 </div>
+
+            {% empty %}
+
+                <p class="px-xl-5">
+                    No products available.
+                </p>
+
             {% endfor %}
 
         </div>
+
     </div>
-    <!-- Products End -->
+    <!-- Featured Products End -->
 
-
-    <!-- Offer Start -->
-    <div class="container-fluid pt-5 pb-3">
-        <div class="row px-xl-5">
-
-            <div class="col-md-6">
-                <div class="product-offer mb-30" style="height: 300px;">
-                    <img class="img-fluid" src="{% static 'img/offer-1.jpg' %}" alt="">
-
-                    <div class="offer-text">
-                        <h6 class="text-white text-uppercase">Save 20%</h6>
-                        <h3 class="text-white mb-3">Special Offer</h3>
-                        <a href="" class="btn btn-primary">Shop Now</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-6">
-                <div class="product-offer mb-30" style="height: 300px;">
-                    <img class="img-fluid" src="{% static 'img/offer-2.jpg' %}" alt="">
-
-                    <div class="offer-text">
-                        <h6 class="text-white text-uppercase">Save 20%</h6>
-                        <h3 class="text-white mb-3">Special Offer</h3>
-                        <a href="" class="btn btn-primary">Shop Now</a>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-    </div>
-    <!-- Offer End -->
-
-
-    <!-- Products Start -->
+    <!-- Recent Products Start -->
     <div class="container-fluid pt-5 pb-3">
 
         <h2 class="section-title position-relative text-uppercase mx-xl-5 mb-4">
-            <span class="bg-secondary pr-3">Recent Products</span>
+
+            <span class="bg-secondary pr-3">
+                Recent Products
+            </span>
+
         </h2>
 
         <div class="row px-xl-5">
 
-            {% for i in "12345678" %}
+            {% for product in recent_products %}
+
                 <div class="col-lg-3 col-md-4 col-sm-6 pb-1">
+
                     <div class="product-item bg-light mb-4">
 
                         <div class="product-img position-relative overflow-hidden">
+
                             <img class="img-fluid w-100"
-                                 src="{% static 'img/product-'|add:i|add:'.jpg' %}"
-                                 alt="">
+                                 src="{{ product.image.url }}"
+                                 alt="{{ product.name }}">
 
                             <div class="product-action">
-                                <a class="btn btn-outline-dark btn-square" href="">
-                                    <i class="fa fa-shopping-cart"></i>
-                                </a>
-                                <a class="btn btn-outline-dark btn-square" href="">
-                                    <i class="far fa-heart"></i>
-                                </a>
-                                <a class="btn btn-outline-dark btn-square" href="">
-                                    <i class="fa fa-sync-alt"></i>
-                                </a>
-                                <a class="btn btn-outline-dark btn-square" href="">
+
+                                <a class="btn btn-outline-dark btn-square"
+                                   href="{% url 'product:detail' product.pk %}">
                                     <i class="fa fa-search"></i>
                                 </a>
+
+                                <a class="btn btn-outline-dark btn-square"
+                                   href="">
+                                    <i class="far fa-heart"></i>
+                                </a>
+
+                                <a class="btn btn-outline-dark btn-square"
+                                   href="">
+                                    <i class="fa fa-sync-alt"></i>
+                                </a>
+
+                                <a class="btn btn-outline-dark btn-square"
+                                   href="">
+                                    <i class="fa fa-shopping-cart"></i>
+                                </a>
+
                             </div>
+
                         </div>
 
                         <div class="text-center py-4">
-                            <a class="h6 text-decoration-none text-truncate" href="">
-                                Product Name Goes Here
+
+                            <a class="h6 text-decoration-none text-truncate"
+                               href="{% url 'product:detail' product.pk %}">
+
+                                {{ product.name }}
+
                             </a>
 
                             <div class="d-flex align-items-center justify-content-center mt-2">
-                                <h5>$123.00</h5>
-                                <h6 class="text-muted ml-2">
-                                    <del>$123.00</del>
-                                </h6>
+
+                                {% if product.discount %}
+
+                                    <h6 class="text-muted mr-2 mb-0">
+                                        <del>{{ product.price }}</del>
+                                    </h6>
+
+                                    <h5 class="text-danger mb-0">
+                                        {{ product.discounted_price }}
+                                    </h5>
+
+                                {% else %}
+
+                                    <h5 class="mb-0">
+                                        {{ product.price }}
+                                    </h5>
+
+                                {% endif %}
+
                             </div>
 
+                            {% if product.discount %}
+
+                                <small class="text-danger">
+                                    {{ product.discount }}% OFF
+                                </small>
+
+                            {% endif %}
+
                         </div>
+
                     </div>
+
                 </div>
+
+            {% empty %}
+
+                <p class="px-xl-5">
+                    No recent products available.
+                </p>
+
             {% endfor %}
 
         </div>
+
     </div>
-    <!-- Products End -->
+    <!-- Recent Products End -->
 
 
     <!-- Vendor Start -->
     <div class="container-fluid py-5">
+
         <div class="row px-xl-5">
 
             <div class="col">
+
                 <div class="owl-carousel vendor-carousel">
 
                     <div class="bg-light p-4">
@@ -468,8 +620,11 @@
                     </div>
 
                 </div>
+
             </div>
+
         </div>
+
     </div>
     <!-- Vendor End -->
 
