@@ -1,6 +1,1 @@
-statics
-templates
-account/templates
-cart/templates
-home/templates
-product/templates
+statics/* linguist-vendored
