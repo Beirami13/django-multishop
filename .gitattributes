@@ -1,7 +1,6 @@
-statics/css/bootstrap*.css linguist-vendored
-statics/js/bootstrap*.js linguist-vendored
-statics/js/jquery*.js linguist-vendored
-statics/vendor/* linguist-vendored
-statics/plugins/* linguist-vendored
-
-statics/template/* linguist-vendored
+statics
+templates
+account/templates
+cart/templates
+home/templates
+product/templates
