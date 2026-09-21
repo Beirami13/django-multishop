@@ -55,6 +55,9 @@ class Cart:
             del self.cart[id]
             self.save()
 
+    def count(self):
+        return sum(item['quantity'] for item in self.cart.values())
+
     def update(self, unique_id, quantity):
         if unique_id in self.cart:
             self.cart[unique_id]['quantity'] = int(quantity)
