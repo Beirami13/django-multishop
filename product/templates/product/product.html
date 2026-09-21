@@ -29,8 +29,34 @@
             <!-- Product Image -->
             <div class="col-lg-5 mb-30">
                 <div id="product-carousel"
-                     class="carousel slide"
+                     class="carousel slide position-relative"
                      data-ride="carousel">
+
+                    <!-- Like / Save Button -->
+                    <div class="position-absolute"
+                         style="top: 15px; right: 15px; z-index: 10;">
+
+                        <form method="post" action="{% url 'wish:wishlist-add' %}">
+
+                            {% csrf_token %}
+
+                            <input type="hidden"
+                                   name="product_id"
+                                   value="{{ product.id }}">
+
+                            <button type="submit"
+                                    class="btn btn-light btn-sm d-flex align-items-center shadow-sm">
+
+                                <i class="fa fa-heart mr-1 {% if product.id in wishlist_ids %}text-danger{% else %}text-dark{% endif %}"></i>
+
+                                Save
+
+                            </button>
+
+                        </form>
+
+                    </div>
+                    <!-- Like / Save Button End -->
 
                     <div class="carousel-inner bg-light">
 

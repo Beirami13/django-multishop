@@ -1,10 +1,22 @@
 from django.views.generic import DetailView, ListView
 from django.views.generic import ListView
 from product.models import Product, Category
+from wishlist.models import Wishlist
+
 
 class ProductDetailView(DetailView):
     template_name = 'product/product.html'
     model = Product
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.request.user.is_authenticated:
+            context['wishlist_ids'] = list(
+                Wishlist.objects.filter(user=self.request.user).values_list('product_id', flat=True)
+            )
+        else:
+            context['wishlist_ids'] = []
+        return context
 
 class ProductListView(ListView):
     model = Product

@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'home',
     'account',
     'product',
-    'cart'
+    'cart',
+    'wishlist',
 ]
 
 MIDDLEWARE = [
@@ -69,6 +70,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'product.context_processors.categories',
                 'cart.context_processors.cart_count',
+                'wishlist.context_processors.wishlist_count',
             ],
         },
     },

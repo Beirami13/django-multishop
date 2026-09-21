@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block main %}
+
+    <!-- Breadcrumb -->
+    <div class="container-fluid">
+        <div class="row px-xl-5">
+            <div class="col-12">
+                <nav class="breadcrumb bg-light mb-30">
+                    <a class="breadcrumb-item text-dark" href="/">Home</a>
+                    <span class="breadcrumb-item active">Wishlist</span>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+    <!-- Wishlist -->
+    <div class="container-fluid pb-5">
+        <div class="row px-xl-5">
+            <div class="col-12">
+
+                <div class="bg-light p-30">
+
+                    {% for item in wishlist_items %}
+
+                        <div class="d-flex align-items-center justify-content-between border-bottom pb-3 mb-3">
+
+                            <div class="d-flex align-items-center">
+
+                                <img src="{{ item.product.image.url }}"
+                                     alt="{{ item.product.name }}"
+                                     style="width: 70px; height: 70px; object-fit: cover;"
+                                     class="mr-3">
+
+                                <div>
+                                    <a href="{% url 'product:detail' item.product.id %}"
+                                       class="text-dark font-weight-bold text-decoration-none">
+                                        {{ item.product.name }}
+                                    </a>
+
+                                    <p class="mb-0 text-muted">
+                                        ${{ item.product.price }}
+                                    </p>
+                                </div>
+
+                            </div>
+
+                            <a href="{% url 'wish:wishlist-remove' item.product.id %}"
+                               class="btn btn-sm btn-outline-danger">
+                                <i class="fa fa-times"></i>
+                            </a>
+
+                        </div>
+
+                    {% empty %}
+
+                        <p class="text-muted mb-0">
+                            You haven't saved any products yet.
+                        </p>
+
+                    {% endfor %}
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
