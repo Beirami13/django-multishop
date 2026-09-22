@@ -186,23 +186,10 @@ class OrderCreationView(LoginRequiredMixin, View):
                 )
 
 
-class OrderDetailView(LoginRequiredMixin, View):
+class OrderDetailView(View):
     def get(self, request, id):
-
-        order = get_object_or_404(
-            Order,
-            id=id,
-            user=request.user
-        )
-
-        return render(
-            request,
-            'cart/order_detail.html',
-            {
-                'order': order
-            }
-        )
-
+        order = get_object_or_404(Order, id=id, user=request.user)
+        return render(request, 'cart/order_detail.html', {'order': order})
 
 class DiscountCheckView(LoginRequiredMixin, View):
     def post(self, request):
