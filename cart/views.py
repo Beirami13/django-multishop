@@ -41,7 +41,12 @@ class CartAddView(LoginRequiredMixin, View):
 
         size = request.POST['size']
         color = request.POST['color']
-        quantity = request.POST['quantity']
+        try:
+            quantity = int(request.POST.get('quantity', 1))
+            if quantity < 1:
+                quantity = 1
+        except (ValueError, TypeError):
+            quantity = 1
 
         cart_items = Cart(request)
         cart_items.add(product, quantity, color, size)
@@ -50,10 +55,9 @@ class CartAddView(LoginRequiredMixin, View):
 
 
 class CartRemoveView(LoginRequiredMixin, View):
-    def get(self, request, id):
+    def post(self, request, id):
         cart = Cart(request)
         cart.remove(id)
-
         return redirect('cart:cart')
 
 
@@ -86,19 +90,10 @@ class OrderCreationView(LoginRequiredMixin, View):
     def post(self, request):
 
         cart = Cart(request)
-
-        address = get_object_or_404(
-            Address,
-            id=request.POST['address'],
-            user=request.user
-        )
-
+        address = get_object_or_404(Address, id=request.POST['address'], user=request.user)
         subtotal = cart.total()
 
-        discount_amount = request.session.get(
-            'discount_amount',
-            0
-        )
+        discount_amount = request.session.get('discount_amount',0)
 
         total_price = subtotal - discount_amount
 
@@ -118,11 +113,9 @@ class OrderCreationView(LoginRequiredMixin, View):
                 last_name=request.POST['last_name'],
                 phone_number=request.POST['phone_number'],
                 email=request.POST.get('email', ''),
-                payment_method='cash',
+                payment_method=request.POST['payment_method'],
                 subtotal=subtotal,
-                discount_amount=discount_amount,
-                total_price=total_price,
-                is_paid=False,
+                total_price=subtotal + 10,
             )
 
             for item in cart:

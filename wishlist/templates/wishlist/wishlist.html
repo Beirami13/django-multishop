@@ -46,10 +46,13 @@
 
                             </div>
 
-                            <a href="{% url 'wish:wishlist-remove' item.product.id %}"
-                               class="btn btn-sm btn-outline-danger">
-                                <i class="fa fa-times"></i>
-                            </a>
+                            <form method="post" action="{% url 'wish:wishlist-remove' item.product.id %}"
+                                  class="d-inline">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-sm btn-outline-danger">
+                                    <i class="fa fa-times"></i>
+                                </button>
+                            </form>
 
                         </div>
 

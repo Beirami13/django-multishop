@@ -30,6 +30,6 @@ class WishlistView(View):
 
 @method_decorator(login_required, name='dispatch')
 class WishlistRemoveView(View):
-    def get(self, request, id):
+    def post(self, request, id):
         Wishlist.objects.filter(user=request.user, product_id=id).delete()
         return redirect('wish:wishlist')
