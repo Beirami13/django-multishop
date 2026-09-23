@@ -1,6 +1,5 @@
 from django.views.generic import DetailView, ListView
-from django.views.generic import ListView
-from product.models import Product, Category
+from product.models import Product
 from wishlist.models import Wishlist
 
 
@@ -10,13 +9,18 @@ class ProductDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+
         if self.request.user.is_authenticated:
             context['wishlist_ids'] = list(
-                Wishlist.objects.filter(user=self.request.user).values_list('product_id', flat=True)
+                Wishlist.objects
+                .filter(user=self.request.user)
+                .values_list('product_id', flat=True)
             )
         else:
             context['wishlist_ids'] = []
+
         return context
+
 
 class ProductListView(ListView):
     model = Product
@@ -25,26 +29,22 @@ class ProductListView(ListView):
     paginate_by = 9
 
     def get_queryset(self):
-
         queryset = Product.objects.all()
+
         slug = self.kwargs.get('slug')
-
         if slug:
-            queryset = queryset.filter(
-                category__slug=slug
-            )
+            queryset = queryset.filter(category__slug=slug)
 
-        min_price = self.request.GET.get('min_price')
-        max_price = self.request.GET.get('max_price')
+        min_discount = self.request.GET.get('min_discount')
+        max_discount = self.request.GET.get('max_discount')
 
-        if min_price:
-            queryset = queryset.filter(
-                price__gte=min_price
-            )
+        if min_discount:
+            queryset = queryset.filter(discount__gte=min_discount)
 
-        if max_price:
-            queryset = queryset.filter(
-                price__lte=max_price
-            )
+        if max_discount:
+            queryset = queryset.filter(discount__lte=max_discount)
 
-        return queryset.distinct()
+        if min_discount or max_discount:
+            queryset = queryset.exclude(discount__isnull=True)
+
+        return queryset
