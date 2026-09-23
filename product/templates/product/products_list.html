@@ -127,131 +127,62 @@
                     <!-- Products -->
                     {% for product in products %}
 
-                        <div class="col-lg-4 col-md-6 col-sm-6 pb-1">
+                        <div class="col-lg-3 col-md-4 col-sm-6 pb-1">
 
-                            <div class="product-item bg-light mb-4">
+                    <div class="product-item bg-light mb-4">
 
-                                <!-- Product Image -->
-                                <div class="product-img position-relative overflow-hidden">
+                        <div class="product-img position-relative overflow-hidden">
 
-                                    {% if product.image %}
+                            <img class="img-fluid w-100"
+                                 src="{{ product.image.url }}"
+                                 alt="{{ product.name }}">
 
-                                        <img
-                                                class="img-fluid w-100"
-                                                src="{{ product.image.url }}"
-                                                alt="{{ product.name }}">
+                        </div>
 
-                                    {% else %}
+                        <div class="text-center py-4">
 
-                                        <img
-                                                class="img-fluid w-100"
-                                                src="{% static 'img/product-1.jpg' %}"
-                                                alt="{{ product.name }}">
+                            <a class="h6 text-decoration-none text-truncate"
+                               href="{% url 'product:detail' product.pk %}">
 
-                                    {% endif %}
+                                {{ product.name }}
 
+                            </a>
 
-                                    <div class="product-action">
+                            <div class="d-flex align-items-center justify-content-center mt-2">
 
-                                        <a
-                                                class="btn btn-outline-dark btn-square"
-                                                href="#">
+                                {% if product.discount %}
 
-                                            <i class="fa fa-shopping-cart"></i>
+                                    <h6 class="text-muted mr-2 mb-0">
+                                        <del>{{ product.price }}</del>
+                                    </h6>
 
-                                        </a>
+                                    <h5 class="text-danger mb-0">
+                                        {{ product.discounted_price }}
+                                    </h5>
 
-                                        <a
-                                                class="btn btn-outline-dark btn-square"
-                                                href="#">
+                                {% else %}
 
-                                            <i class="far fa-heart"></i>
+                                    <h5 class="mb-0">
+                                        {{ product.price }}
+                                    </h5>
 
-                                        </a>
-
-                                        <a
-                                                class="btn btn-outline-dark btn-square"
-                                                href="#">
-
-                                            <i class="fa fa-sync-alt"></i>
-
-                                        </a>
-
-                                        <a
-                                                class="btn btn-outline-dark btn-square"
-                                                href="#">
-
-                                            <i class="fa fa-search"></i>
-
-                                        </a>
-
-                                    </div>
-
-                                </div>
-
-
-                                <!-- Product Info -->
-                                <div class="text-center py-4">
-
-                                    <a
-                                            class="h6 text-decoration-none text-truncate"
-                                            href="#">
-
-                                        {{ product.name }}
-
-                                    </a>
-
-
-                                    <div class="d-flex align-items-center justify-content-center mt-2">
-
-                                        {% if product.discount %}
-
-                                            <h6 class="text-muted mr-2 mb-0">
-                                                <del>{{ product.price }}</del>
-                                            </h6>
-
-                                            <h5 class="text-danger mb-0">
-                                                {{ product.discounted_price }}
-                                            </h5>
-
-                                        {% else %}
-
-                                            <h5 class="mb-0">
-                                                {{ product.price }}
-                                            </h5>
-
-                                        {% endif %}
-
-                                    </div>
-
-                                    {% if product.discount %}
-
-                                        <small class="text-danger">
-                                            {{ product.discount }}% OFF
-                                        </small>
-
-                                    {% endif %}
-
-
-                                    <div class="d-flex align-items-center justify-content-center mb-1">
-
-                                        <small class="fa fa-star text-primary mr-1"></small>
-                                        <small class="fa fa-star text-primary mr-1"></small>
-                                        <small class="fa fa-star text-primary mr-1"></small>
-                                        <small class="fa fa-star text-primary mr-1"></small>
-                                        <small class="fa fa-star text-primary mr-1"></small>
-
-                                        <small class="pt-1">
-                                            (0)
-                                        </small>
-
-                                    </div>
-
-                                </div>
+                                {% endif %}
 
                             </div>
 
+                            {% if product.discount %}
+
+                                <small class="text-danger">
+                                    {{ product.discount }}% OFF
+                                </small>
+
+                            {% endif %}
+
                         </div>
+
+                    </div>
+
+                </div>
 
                     {% empty %}
 
