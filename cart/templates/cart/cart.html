@@ -75,6 +75,9 @@
                                       action="{% url 'cart:cart-update' %}">
 
                                     {% csrf_token %}
+                                    {% if form.errors %}
+                                        <div class="alert alert-danger">{{ form.errors }}</div>
+                                    {% endif %}
 
                                     <input type="hidden"
                                            name="unique_id"
@@ -128,7 +131,8 @@
                             <!-- Remove -->
                             <td class="align-middle">
 
-                                <form method="post" action="{% url 'cart:cart-remove' item.unique_id %}" class="d-inline">
+                                <form method="post" action="{% url 'cart:cart-remove' item.unique_id %}"
+                                      class="d-inline">
                                     {% csrf_token %}
                                     <button type="submit" class="btn btn-sm btn-danger">
                                         <i class="fa fa-times"></i>

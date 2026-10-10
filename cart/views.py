@@ -1,350 +1,205 @@
-from django.shortcuts import render, get_object_or_404, redirect
-from django.views import View
-from django.http import HttpResponse
+from django.conf import settings
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404, redirect, render
+from django.views import View
+
 from account.models import Address
 from product.models import Product
-
 from .cart_modules import Cart
-from .models import Order, OrderItem, Discount
+from .forms import CheckoutForm
+from .models import Discount, Order
+from .services import (
+    InvalidDiscount, OutOfStock, calculate_discount, cancel_order, create_order,
+)
 from .zarinpal import ZarinPal
+
+pay = ZarinPal(
+    merchant=settings.ZARINPAL_MERCHANT,
+    call_back_url=settings.ZARINPAL_CALLBACK_URL,
+)
+
+
+def parse_quantity(value, default=1):
+    try:
+        return max(1, int(value))
+    except (TypeError, ValueError):
+        return default
+
+
+def get_applied_discount(request):
+    name = request.session.get('discount_code')
+    if not name:
+        return None
+    return Discount.objects.filter(name=name, quantity__gt=0).first()
+
+
+def finish_cart(request):
+    Cart(request).remove_cart()
+    request.session.pop('discount_code', None)
 
 
 class CartView(LoginRequiredMixin, View):
     def get(self, request):
         cart_items = Cart(request)
+        subtotal = cart_items.total()
+        discount_amount = calculate_discount(subtotal, get_applied_discount(request))
 
-        discount_amount = request.session.get('discount_amount', 0)
-
-        total_price = request.session.get(
-            'total_price',
-            cart_items.total()
-        )
-
-        return render(
-            request,
-            "cart/cart.html",
-            {
-                'cart_items': cart_items,
-                'discount_amount': discount_amount,
-                'total_price': total_price,
-            }
-        )
+        return render(request, 'cart/cart.html', {
+            'cart_items': cart_items,
+            'discount_amount': discount_amount,
+            'total_price': subtotal - discount_amount,
+        })
 
 
 class CartAddView(LoginRequiredMixin, View):
     def post(self, request):
-        product = get_object_or_404(
-            Product,
-            id=request.POST['product_id']
+        product = get_object_or_404(Product, id=request.POST.get('product_id'))
+        Cart(request).add(
+            product,
+            parse_quantity(request.POST.get('quantity')),
+            request.POST.get('color', ''),
+            request.POST.get('size', ''),
         )
-
-        size = request.POST['size']
-        color = request.POST['color']
-        try:
-            quantity = int(request.POST.get('quantity', 1))
-            if quantity < 1:
-                quantity = 1
-        except (ValueError, TypeError):
-            quantity = 1
-
-        cart_items = Cart(request)
-        cart_items.add(product, quantity, color, size)
-
         return redirect('cart:cart')
 
 
 class CartRemoveView(LoginRequiredMixin, View):
     def post(self, request, id):
-        cart = Cart(request)
-        cart.remove(id)
+        Cart(request).remove(id)
         return redirect('cart:cart')
 
 
 class CartUpdateView(LoginRequiredMixin, View):
     def post(self, request):
-        unique_id = request.POST['unique_id']
-        quantity = request.POST['quantity']
-
-        cart = Cart(request)
-        cart.update(unique_id, quantity)
-
+        Cart(request).update(
+            request.POST.get('unique_id'),
+            parse_quantity(request.POST.get('quantity')),
+        )
         return redirect('cart:cart')
 
-
-class OrderCreationView(LoginRequiredMixin, View):
-
-    def get(self, request):
-        cart = Cart(request)
-        addresses = Address.objects.filter(user=request.user)
-
-        return render(
-            request,
-            'cart/order_detail.html',
-            {
-                'cart_items': cart,
-                'addresses': addresses
-            }
-        )
-
-    def post(self, request):
-
-        cart = Cart(request)
-        address = get_object_or_404(Address, id=request.POST['address'], user=request.user)
-        subtotal = cart.total()
-
-        discount_amount = request.session.get('discount_amount',0)
-
-        total_price = subtotal - discount_amount
-
-        payment_method = request.POST['payment_method']
-
-
-        # -------------------------
-        # Cash Payment
-        # -------------------------
-
-        if payment_method == 'cash':
-
-            order = Order.objects.create(
-                user=request.user,
-                address=address,
-                first_name=request.POST['first_name'],
-                last_name=request.POST['last_name'],
-                phone_number=request.POST['phone_number'],
-                email=request.POST.get('email', ''),
-                payment_method=request.POST['payment_method'],
-                subtotal=subtotal,
-                total_price=subtotal + 10,
-            )
-
-            for item in cart:
-
-                OrderItem.objects.create(
-                    order=order,
-                    product=item['product'],
-                    price=item['product'].price,
-                    color=item['color'],
-                    quantity=item['quantity'],
-                    size=item['size'],
-                )
-
-            cart.remove_cart()
-
-            return render(
-                request,
-                'cart/order_success.html',
-                {
-                    'message': 'Your order has been placed successfully.'
-                }
-            )
-
-
-        # -------------------------
-        # Online Payment
-        # -------------------------
-
-        if payment_method == 'online':
-
-            # اطلاعات سفارش را موقتاً در session نگه می‌داریم
-            request.session['pending_order'] = {
-                'address': address.id,
-                'first_name': request.POST['first_name'],
-                'last_name': request.POST['last_name'],
-                'phone_number': request.POST['phone_number'],
-                'email': request.POST.get('email', ''),
-                'subtotal': float(subtotal),
-                'discount_amount': float(discount_amount),
-                'total_price': float(total_price),
-            }
-
-            request.session.modified = True
-
-
-            response = pay.send_request(
-                amount=int(total_price),
-                description='Online payment for order',
-                email=request.POST.get('email', ''),
-                mobile=request.POST['phone_number']
-            )
-
-            if response.get('error_code') is None:
-
-                return response
-
-            else:
-
-                return HttpResponse(
-                    f"Payment error: {response.get('message')}"
-                )
-
-
-class OrderDetailView(View):
-    def get(self, request, id):
-        order = get_object_or_404(Order, id=id, user=request.user)
-        return render(request, 'cart/order_detail.html', {'order': order})
 
 class DiscountCheckView(LoginRequiredMixin, View):
     def post(self, request):
+        name = request.POST.get('discount', '').strip()
+        discount = Discount.objects.filter(name=name, quantity__gt=0).first()
 
-        cart = Cart(request)
-
-        discount_name = request.POST['discount']
-
-        discount_code = get_object_or_404(
-            Discount,
-            name=discount_name
-        )
-
-        if discount_code.quantity == 0:
-            return redirect('cart:cart')
-
-        subtotal = cart.total()
-
-        discount_amount = (
-            subtotal * discount_code.discount / 100
-        )
-
-        total_price = subtotal - discount_amount
-
-        request.session['discount_amount'] = float(
-            discount_amount
-        )
-
-        request.session['total_price'] = float(
-            total_price
-        )
-
-        request.session['discount_name'] = (
-            discount_code.name
-        )
-
-        request.session.modified = True
+        if discount:
+            request.session['discount_code'] = discount.name
+            messages.success(request, 'Discount code applied.')
+        else:
+            request.session.pop('discount_code', None)
+            messages.error(request, 'Invalid or expired discount code.')
 
         return redirect('cart:cart')
 
 
-# -------------------------
-# ZarinPal
-# -------------------------
+def render_checkout(request, cart, form):
+    shipping = settings.SHIPPING_COST
+    subtotal = cart.total()
+    discount_amount = calculate_discount(subtotal, get_applied_discount(request))
 
-pay = ZarinPal(
-    merchant='xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx',
-    call_back_url='http://localhost:8000/verify/'
-)
+    return render(request, 'cart/order_detail.html', {
+        'cart_items': cart,
+        'addresses': Address.objects.filter(user=request.user),
+        'form': form,
+        'shipping': shipping,
+        'discount_amount': discount_amount,
+        'grand_total': subtotal - discount_amount + shipping,
+    })
 
 
-def send_request(request):
+class OrderCreationView(LoginRequiredMixin, View):
+    def get(self, request):
+        cart = Cart(request)
+        if not list(cart):
+            return redirect('cart:cart')
+        return render_checkout(request, cart, CheckoutForm(request.user))
 
-    response = pay.send_request(
-        amount='1000',
-        description='Payment description',
-        email='Example@test.com',
-        mobile='09123456789'
-    )
+    def post(self, request):
+        cart = Cart(request)
+        items = list(cart)
+        if not items:
+            return redirect('cart:cart')
 
-    if response.get('error_code') is None:
+        form = CheckoutForm(request.user, request.POST)
+        if not form.is_valid():
+            return render_checkout(request, cart, form)
 
-        return response
+        data = form.cleaned_data
 
-    else:
+        try:
+            order = create_order(request.user, items, data, get_applied_discount(request))
+        except OutOfStock as e:
+            form.add_error(None, f'Not enough stock for: {e}')
+            return render_checkout(request, cart, form)
+        except InvalidDiscount:
+            request.session.pop('discount_code', None)
+            form.add_error(None, 'This discount code is no longer valid.')
+            return render_checkout(request, cart, form)
 
-        return HttpResponse(
-            f"Error code: {response.get('error_code')}, "
-            f"Error Message: {response.get('message')}"
+        # Cash on delivery: the order is final, empty the cart.
+        if data['payment_method'] == 'cash':
+            finish_cart(request)
+            messages.success(request, 'Your order has been placed successfully.')
+            return redirect('cart:order-detail', id=order.id)
+
+        # Online payment: the order exists but is unpaid until verify() runs.
+        request.session['pending_order_id'] = order.id
+
+        response = pay.send_request(
+            amount=int(order.total_price),
+            description=f'Order #{order.id}',
+            email=data.get('email') or '',
+            mobile=data['phone_number'],
         )
 
+        if response.get('error_code') is None:
+            return response
 
+        cancel_order(order)
+        request.session.pop('pending_order_id', None)
+        form.add_error(None, f"Payment error: {response.get('message')}")
+        return render_checkout(request, cart, form)
+
+
+class OrderDetailView(LoginRequiredMixin, View):
+    def get(self, request, id):
+        order = get_object_or_404(
+            Order.objects.prefetch_related('orderitem_set__product'),
+            id=id,
+            user=request.user,
+        )
+        return render(request, 'cart/order_detail.html', {'order': order})
+
+
+@login_required
 def verify(request):
+    order_id = request.session.get('pending_order_id')
+    order = Order.objects.filter(pk=order_id, user=request.user).first() if order_id else None
 
-    pending_order = request.session.get('pending_order')
+    if order is None:
+        return HttpResponse('No pending order found.')
 
-    if not pending_order:
-        return HttpResponse(
-            'No pending order found.'
-        )
+    if order.is_paid:
+        return redirect('cart:order-detail', id=order.id)
 
-
-    response = pay.verify(
-        request=request,
-        amount=int(pending_order['total_price'])
-    )
-
-
-    # -------------------------
-    # Payment Successful
-    # -------------------------
+    response = pay.verify(request=request, amount=int(order.total_price))
 
     if response.get('transaction') and response.get('pay'):
+        order.is_paid = True
+        order.status = 'processing'
+        order.save(update_fields=['is_paid', 'status'])
 
-        address = get_object_or_404(
-            Address,
-            id=pending_order['address'],
-            user=request.user
-        )
+        request.session.pop('pending_order_id', None)
+        finish_cart(request)
+        messages.success(request, 'Your payment was successful and your order has been placed.')
+        return redirect('cart:order-detail', id=order.id)
 
-        order = Order.objects.create(
-            user=request.user,
-            address=address,
-            first_name=pending_order['first_name'],
-            last_name=pending_order['last_name'],
-            phone_number=pending_order['phone_number'],
-            email=pending_order['email'],
-            payment_method='online',
-            subtotal=pending_order['subtotal'],
-            discount_amount=pending_order['discount_amount'],
-            total_price=pending_order['total_price'],
-            is_paid=True,
-        )
-
-
-        # ساختن OrderItem ها
-        cart = Cart(request)
-
-        for item in cart:
-
-            OrderItem.objects.create(
-                order=order,
-                product=item['product'],
-                price=item['product'].price,
-                color=item['color'],
-                quantity=item['quantity'],
-                size=item['size'],
-            )
-
-
-        # پاک کردن Cart
-        cart.remove_cart()
-
-
-        # پاک کردن اطلاعات موقت سفارش
-        request.session.pop('pending_order', None)
-        request.session.pop('discount_amount', None)
-        request.session.pop('total_price', None)
-        request.session.pop('discount_name', None)
-
-
-        return render(
-            request,
-            'cart/order_success.html',
-            {
-                'message': 'Your payment was successful and your order has been placed.'
-            }
-        )
-
-
-    # -------------------------
-    # Payment Failed / Cancelled
-    # -------------------------
-
-    else:
-
-        request.session.pop('pending_order', None)
-
-        return render(
-            request,
-            'cart/order_failed.html',
-            {
-                'message': 'Your payment was cancelled or failed. Your order was not placed.'
-            }
-        )
+    cancel_order(order)
+    request.session.pop('pending_order_id', None)
+    return render(request, 'cart/order_failed.html', {
+        'message': 'Your payment was cancelled or failed. Your order was not placed.'
+    })

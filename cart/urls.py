@@ -1,7 +1,7 @@
 from cart.views import OrderDetailView, OrderCreationView, DiscountCheckView
 from cart.views import CartView, CartAddView, CartRemoveView, CartUpdateView
 from django.urls import path
-from .views import verify, send_request
+from .views import verify
 
 app_name = 'cart'
 urlpatterns = [
@@ -13,6 +13,6 @@ urlpatterns = [
     path('checkout/', OrderCreationView.as_view(), name='order-creation'),
     path('order/<int:id>/', OrderDetailView.as_view(), name='order-detail'),
     path('Applydiscount/', DiscountCheckView.as_view(), name='apply-discount'),
-    path('request', send_request, name='request'),
-    path('verify', verify, name='verify')
+
+    path('verify', verify, name='verify'),
 ]

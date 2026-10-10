@@ -139,3 +139,5 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 AUTH_USER_MODEL = "account.User"
 LOGIN_URL = 'account:login'
 SHIPPING_COST = 10
+ZARINPAL_MERCHANT = os.environ.get('ZARINPAL_MERCHANT', '')
+ZARINPAL_CALLBACK_URL = os.environ.get('ZARINPAL_CALLBACK_URL', 'http://localhost:8000/verify/')
