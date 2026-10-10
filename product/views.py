@@ -16,6 +16,8 @@ class ProductDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['comments'] = self.object.comments.select_related('user')
+        context['related_products'] = (Product.objects.filter(category__in=self.object.category.all())
+                                        .exclude(pk=self.object.pk).distinct()[:4])
         if self.request.user.is_authenticated:
             context['wishlist_ids'] = list(
                 Wishlist.objects.filter(user=self.request.user).values_list('product_id', flat=True)
