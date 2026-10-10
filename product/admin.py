@@ -1,7 +1,6 @@
 from django.contrib import admin
-
+from .models import Product, Category, Comment, information
 from . import models
-from .models import information, Product
 
 
 class InformationAdmin(admin.StackedInline):
@@ -19,3 +18,9 @@ class CategoryAdmin(admin.ModelAdmin):
 
 admin.site.register(models.Size)
 admin.site.register(models.Color)
+
+@admin.register(Comment)
+class CommentAdmin(admin.ModelAdmin):
+    list_display = ['user', 'product', 'created']
+    list_filter = ['created']
+    search_fields = ['user__phone_number', 'product__name', 'text']

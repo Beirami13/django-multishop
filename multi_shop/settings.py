@@ -137,3 +137,4 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'statics')]
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 AUTH_USER_MODEL = "account.User"
+LOGIN_URL = 'account:login'

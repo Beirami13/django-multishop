@@ -1,5 +1,11 @@
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import get_object_or_404, redirect
+from django.urls import reverse
+from django.utils.decorators import method_decorator
+from django.views import View
 from django.views.generic import DetailView, ListView
-from product.models import Product
+
+from product.models import Product, Category, Comment
 from wishlist.models import Wishlist
 
 
@@ -9,16 +15,13 @@ class ProductDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
+        context['comments'] = self.object.comments.select_related('user')
         if self.request.user.is_authenticated:
             context['wishlist_ids'] = list(
-                Wishlist.objects
-                .filter(user=self.request.user)
-                .values_list('product_id', flat=True)
+                Wishlist.objects.filter(user=self.request.user).values_list('product_id', flat=True)
             )
         else:
             context['wishlist_ids'] = []
-
         return context
 
 
@@ -30,21 +33,30 @@ class ProductListView(ListView):
 
     def get_queryset(self):
         queryset = Product.objects.all()
-
         slug = self.kwargs.get('slug')
+
         if slug:
             queryset = queryset.filter(category__slug=slug)
 
-        min_discount = self.request.GET.get('min_discount')
-        max_discount = self.request.GET.get('max_discount')
+        min_price = self.request.GET.get('min_price')
+        max_price = self.request.GET.get('max_price')
 
-        if min_discount:
-            queryset = queryset.filter(discount__gte=min_discount)
+        if min_price:
+            queryset = queryset.filter(price__gte=min_price)
 
-        if max_discount:
-            queryset = queryset.filter(discount__lte=max_discount)
+        if max_price:
+            queryset = queryset.filter(price__lte=max_price)
 
-        if min_discount or max_discount:
-            queryset = queryset.exclude(discount__isnull=True)
+        return queryset.distinct()
 
-        return queryset
+
+@method_decorator(login_required, name='dispatch')
+class CommentAddView(View):
+    def post(self, request, pk):
+        product = get_object_or_404(Product, pk=pk)
+        text = request.POST.get('text', '').strip()
+
+        if text and len(text) <= 1000:
+            Comment.objects.create(user=request.user, product=product, text=text)
+
+        return redirect(reverse('product:detail', args=[pk]) + '#reviews')
