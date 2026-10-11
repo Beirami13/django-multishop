@@ -1,14 +1,16 @@
+import secrets
+
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.views import View
 from .forms import UserLoginForm, RegisterForm, CheckOtpForm, AddressCreationForm
 import ghasedak_sms
-from random import randint
+from random import seed
 from .models import otp, User, Address
 from uuid import uuid4
 
-SMS = ghasedak_sms.Ghasedak("API", '09924631590')
+from .services import send_otp_sms
 
 
 class UserLogin(View):
@@ -43,18 +45,10 @@ class UserRegister(View):
         if form.is_valid():
             cd = form.cleaned_data
 
-            rand_code = randint(1000, 9999)
+            rand_code = secrets.randbelow(9000) + 1000
             token = str(uuid4())
 
-            SMS.send_single_sms(
-                ghasedak_sms.SendSingleSmsInput(
-                    message=rand_code,
-                    receptor=cd['phone_number'],
-                    line_number='3000****',
-                    send_date='',
-                    client_reference_id=''
-                )
-            )
+            send_otp_sms(cd['phone_number'], rand_code)
 
             otp.objects.create(
                 phone_number=cd['phone_number'],
@@ -62,11 +56,7 @@ class UserRegister(View):
                 token=token,
             )
 
-            return redirect(
-                reverse('account:check_otp') + f'?token={token}'
-            )
-
-        form.add_error('password', "invalid data")
+            return redirect(reverse('account:check_otp') + f'?token={token}')
 
         return render(request, 'account/register.html', {'form': form})
 
@@ -83,34 +73,21 @@ class CheckOtpView(View):
 
     def post(self, request):
         token = request.GET.get('token')
-
         form = CheckOtpForm(request.POST)
 
         if form.is_valid():
             cd = form.cleaned_data
-
-            otp_obj = otp.objects.filter(
-                code=cd['code'],
-                token=token
-            ).first()
+            otp_obj = otp.objects.filter(code=cd['code'], token=token).first()
 
             if otp_obj:
-                user, is_create = User.objects.get_or_create(
-                    phone_number=otp_obj.phone_number
-                )
-
+                user, _ = User.objects.get_or_create(phone_number=otp_obj.phone_number)
                 login(request, user)
-
+                otp_obj.delete()
                 return redirect('/')
 
             form.add_error('code', 'wrong code')
-            otp_obj.delete()
 
-        return render(
-            request,
-            'account/checkCode.html',
-            {'form': form}
-        )
+        return render(request, 'account/checkCode.html', {'form': form})
 
 class AddAddressView(View):
     def get(self, request):

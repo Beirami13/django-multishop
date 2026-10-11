@@ -141,3 +141,6 @@ LOGIN_URL = 'account:login'
 SHIPPING_COST = 10
 ZARINPAL_MERCHANT = os.environ.get('ZARINPAL_MERCHANT', '')
 ZARINPAL_CALLBACK_URL = os.environ.get('ZARINPAL_CALLBACK_URL', 'http://localhost:8000/verify/')
+GHASEDAK_API_KEY = os.environ.get('GHASEDAK_API_KEY', '')
+GHASEDAK_SENDER = os.environ.get('GHASEDAK_SENDER', '')
+GHASEDAK_LINE_NUMBER = os.environ.get('GHASEDAK_LINE_NUMBER', '')
